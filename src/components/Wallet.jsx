@@ -1,0 +1,41 @@
+/** @jsx jsx */
+import { css, jsx } from '@emotion/react'
+import React, {useContext} from 'react';
+import {WebDispatch} from "../App";
+import {useHistory} from "react-router-dom";
+
+
+
+const walletStyle =css`
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+  margin-left: auto;
+  margin-right: auto;
+  justify-content: center;
+  background-color: white;
+  span{
+    text-align: center;
+  }
+`
+
+const Wallet = ({connectWeb3}) => {
+    const history = useHistory();
+    console.log(history);
+    const {state, dispatch} = useContext(WebDispatch);
+    const onSubmit = async (event)=>{
+        event.preventDefault();
+        await connectWeb3();
+        history.push("/market");
+    }
+    return(
+        <div css={walletStyle}>
+            <span>Sign in your wallet</span>
+            <img src="images/metamask.png" alt="metamask"/>
+            <button onClick={onSubmit}>로그인하기</button>
+        </div>
+    )
+}
+
+export default Wallet;
