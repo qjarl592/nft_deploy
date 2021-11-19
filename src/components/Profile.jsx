@@ -14,7 +14,7 @@ const Profile = ({contract, pinata}) => {
 
 	const fetchPinned = async () => {
 		const filter = {
-			status: 'pinned',
+			status: 'unpinned',
 			metadata: {
 				keyvalues: {
 					account: {

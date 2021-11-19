@@ -23,7 +23,7 @@ const asset = css`
 	}
 `
 const filter={
-	status: 'pinned',
+	status: 'unpinned',
 	metadata:{
 		name: '',
 		keyvalues: {
