@@ -35,7 +35,7 @@ const reducer = (state, action) =>{
 }
 
 const pinataSDK = require('@pinata/sdk');
-const pinataObj = pinataSDK(REACT_APP_PINATA_API_KEY, REACT_APP_PINATA_SECRET_KEY);
+const pinataObj = pinataSDK(process.env.REACT_APP_PINATA_API_KEY, process.env.REACT_APP_PINATA_SECRET_KEY);
 
 const App = () => {
     const [account, setAccount] = useRecoilState(accountState);
