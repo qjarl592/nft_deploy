@@ -1,26 +1,23 @@
 /** @jsx jsx */
 import { css, jsx } from '@emotion/react'
-import {WebDispatch} from "../App";
-import {useContext, useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import Asset from "./Asset";
-import { useRecoilState, useRecoilValue } from 'recoil';
-import { accountState, keywordState } from '../state/state';
+import { useRecoilState } from 'recoil';
+import { keywordState } from '../state/state';
 
 const market= css`
-	width: 66%;
+	position: absolute;
+	margin-top: 1em;
+	left: 50%;
+	transform: translate(-50%);
+	width: 90%;
 	height: 100%;
 	background-color: white;
 	box-shadow: 6px 0px 6px 2px rgba(217, 217, 217, 1);
-`
-const asset = css`
-	list-style: none;
-	width: 230px;
-	height: 350px;
-	box-shadow: 6px 0px 6px 2px rgba(217, 217, 217, 1);
-	img{
-		object-fit: contain;
-		width: 100%;
-	}
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: left;
+	align-content: stretch;
 `
 const filter={
 	status: 'unpinned',
@@ -35,7 +32,7 @@ const filter={
 	}
 }
 
-const Market = ({history,contract,pinata}) => {
+const Market = ({contract,pinata}) => {
 	const [keyword, setKeyword] = useRecoilState(keywordState) //검색 키워드
 	const [assets, setAssets] = useState({}); //마켓에서 보여지는 토큰들
 	const [exchangeRate, setExchangeRate] = useState();
@@ -63,11 +60,10 @@ const Market = ({history,contract,pinata}) => {
 	return (
 		<div css={market}>
 			{Object.keys(assets).map(key => (
-				<Asset asset={assets[key]} contract={contract} pinata={pinata} exchangeRate={exchangeRate}/>
+				<Asset key={key} asset={assets[key]} contract={contract} pinata={pinata} exchangeRate={exchangeRate}/>
 			))}
 		</div>
 	)
-
 };
 
 export default Market;

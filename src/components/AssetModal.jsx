@@ -26,7 +26,7 @@ const purchaseButton = css`
 	height: 4vh;
 `
 
-const AssetModal = ({asset, contract, pinata, isOpen, close, setFlag}) => {
+const AssetModal = ({asset, contract, pinata, isOpen, close }) => {
 	const [account, setAccount] = useRecoilState(accountState);
 
 	const buyToken = async () => {
@@ -44,38 +44,6 @@ const AssetModal = ({asset, contract, pinata, isOpen, close, setFlag}) => {
 		await pinata.hashMetadata(asset.ipfs_pin_hash, updateAccount)
 		close()
 	};
-
-	// const updateToken = async () => {
-	// 	console.log('update click')
-	// 	const newDescription = "new description"
-	// 	const newState = 'public'
-	// 	const newPrice = '2'
-
-	// 	const newMeta = {
-	// 		keyvalues: {
-	// 			description: newDescription,
-	// 		}
-	// 	}
-
-	// 	if(newState == 'public') {
-	// 		newMeta['keyvalues']['state'] = newState
-	// 		newMeta['keyvalues']['price'] = newPrice
-	// 	}
-
-	// 	await pinata.hashMetadata(asset.ipfs_pin_hash, newMeta)
-	// 	setFlag(true)
-	// 	close()
-	// }
-
-	// const deleteToken = async () => {
-	// 	console.log('delete click')
-	// 	const tokenID = asset.metadata.keyvalues.tokenID
-	// 	await contract.methods.burn(tokenID).send({ from: account })
-	// 	await pinata.unpin(asset.ipfs_pin_hash)
-	// 	setFlag(true)
-	// 	close()
-	// }
-
 
 	return (
 		<Modal

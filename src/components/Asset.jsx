@@ -5,14 +5,41 @@ import { css, jsx } from '@emotion/react'
 import {useHistory} from "react-router-dom";
 import ProfileAssetModal from "./ProfileAssetModal";
 
+const info = css`
+	padding: 0.5em;
+	.price{
+		font-size: 0.6rem;
+		color: gray;
+	}
+`
+const nameAudio = css`
+	display: flex;
+	align-items: center;
+	.name {
+		flex: 2;
+		margin-right: 5px;
+	}
+	.audio {
+		flex: 8;
+		height: 2em;
+	}
+`
 const assetStyle = css`
+	&:hover {
+		opacity: 0.8;
+		transform: scale(1.03);
+	}
 	list-style: none;
-	width: 230px;
+	width: 260px;
 	height: 350px;
-	box-shadow: 6px 0px 6px 2px rgba(217, 217, 217, 1);
+	padding: 1.2em;
+	border-radius: 1em;
+	box-shadow: 4px 2px 4px 2px rgba(217, 217, 217, 217);
 	img{
+		border-radius: 0.5em;
 		object-fit: contain;
 		width: 100%;
+		padding: 0.5em;
 	}
 	.info{
 		h2{
@@ -26,6 +53,8 @@ const assetStyle = css`
 
 const Asset = ({asset, contract, pinata, setFlag, exchangeRate}) => {
 	const baseURL = 'https://gateway.pinata.cloud/ipfs/';
+	const {name} = asset.metadata
+	const { price} = asset.metadata.keyvalues;
 	const [isModalOpen, setIsModalOpen] = useState(false); //모달창이 열렸는가?
 	let history = useHistory();
 	const {pathname} = history.location;
@@ -45,12 +74,14 @@ const Asset = ({asset, contract, pinata, setFlag, exchangeRate}) => {
 					? <ProfileAssetModal asset={asset} contract={contract} isOpen={isModalOpen} close={closeModal} pinata={pinata} setFlag={setFlag}/>
 					: <AssetModal asset={asset} contract={contract} isOpen={isModalOpen} close={closeModal} pinata={pinata}/>
 			}
-			<div className="info">
-				<h2 onClick={openModal}>{asset.metadata.name}</h2>
-				<audio controls>
-					<source src={baseURL + asset.ipfs_pin_hash}/>
-				</audio>
-				<h3>{asset.metadata.keyvalues.price} ETH (Approx. {Math.floor(Number(asset.metadata.keyvalues.price)*exchangeRate)} 원)</h3>
+			<div css={info}>
+				<div css={nameAudio}>
+					<span className="name">{name}</span>
+					<audio controls className="audio">
+						<source src={baseURL + asset.ipfs_pin_hash}/>
+					</audio>
+				</div>
+				<span className="price">{price} ETH (Approx. {Math.floor(Number(asset.metadata.keyvalues.price)*exchangeRate)} 원)</span>
 			</div>
 		</li>
 	);

@@ -7,6 +7,7 @@ import {accountState, keywordState} from '../state/state';
 import getWeb3 from "../service/getWeb3";
 
 
+
 const header= css`
 	width: 100%;
 	display: flex;
@@ -17,7 +18,9 @@ const header= css`
 `
 
 const logo=css`
-	margin-left: 90px ;
+	object-fit: contain;
+	width: 15%;
+	padding: 2em;
 `
 
 const buttons=css`
@@ -55,22 +58,19 @@ const searchWindow =css`
 	border-radius: 24px;
 	border: 1px black solid;
 	align-items: center;
-	input{
+
+	input {
 		border: none;
-		width: 300px;
+		width: 100%;
+		&:focus {
+			outline: none;
+		}
 	}
-	img{
-		margin-left: 20px;
-		margin-top: 5px;
+	img {
+		margin: auto 1.5em auto 1em;
 		width: 20px;
 		height: 20px;
 	}
-`
-const button =css`
-	z-index: -1;
-	/* margin-top: 300px ; */
-	border: none;
-	background-color: white;
 `
 
 const Header = () => {
@@ -109,7 +109,7 @@ const Header = () => {
 
 	return(
 		<div css={header} className="app-header">
-			<img src="images/Logo.png" alt="" onClick={onLogo} />
+			<img src="images/Logo.png" alt="" onClick={onLogo} css={logo}/>
 			<div css={searchWindow}>
 				<img src="images/SVG/Search.svg" alt="" onClick={search}/>
 				<input ref ={keywordRef} id="input" type="text" />

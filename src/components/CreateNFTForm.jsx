@@ -59,24 +59,25 @@ const CreateNftForm = ({isModalOpen, closeModal, setFlag, contract, pinata}) => 
                 name: titleRef.current.value || '',
                 keyvalues: {
                     author: authorRef.current.value || '',
-                    description: descriptionRef.current.value || '',
-                    image: 'https://gateway.pinata.cloud/ipfs/'+myImageResult.path,
-                    state: 'private',
-                    account: account,
-                },
-            },
+                    description : descriptionRef.current.value || '',
+                    image : 'https://gateway.pinata.cloud/ipfs/'+myImageResult.path,
+                    state : 'private',
+                    account: account
+                }
+            }
         }
-        
+        //pinning
         const myAssetResult = await ipfs.add(audioBuffer);
         const pinataResult = await pinata.pinByHash(myAssetResult.path, options);
 
         const nft = await contract.methods.mint(account, pinataResult.ipfsHash).send({ from: account });
+        console.log(nft)
 		const tokenID = nft.events.Transfer.returnValues.tokenId
 
         const updateID = {
 			keyvalues: {
 				tokenID: tokenID,
-			},
+			}
 		}
 		await pinata.hashMetadata(myAssetResult.path, updateID)
         setFlag(true)
