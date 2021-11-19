@@ -62,9 +62,9 @@ const CreateNftForm = ({isModalOpen, closeModal, setFlag, contract, pinata}) => 
                     description : descriptionRef.current.value || '',
                     image : 'https://gateway.pinata.cloud/ipfs/'+myImageResult.path,
                     state : 'private',
-                    account: account
-                }
-            }
+                    account: account,
+                },
+            },
         }
         //pinning
         const myAssetResult = await ipfs.add(audioBuffer);
@@ -77,7 +77,7 @@ const CreateNftForm = ({isModalOpen, closeModal, setFlag, contract, pinata}) => 
         const updateID = {
 			keyvalues: {
 				tokenID: tokenID,
-			}
+			},
 		}
 		await pinata.hashMetadata(myAssetResult.path, updateID)
         setFlag(true)
