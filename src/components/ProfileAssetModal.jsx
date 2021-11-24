@@ -28,14 +28,22 @@ const assetInfo = css`
     list-style: none;
   }
 `
-const ProfileAssetModal = ({asset, isOpen, close, pinata, setFlag, contract}) =>{
+const ProfileAssetModal = ({asset, isOpen, close, pinata, setFlag, contract, exchangeRate}) =>{
     const [account, setAccount] = useRecoilState(accountState);
 
     const {name} = asset.metadata
-    const { author, description, price, state} = asset.metadata.keyvalues;
+    const {author, description, price, state} = asset.metadata.keyvalues;
+    const [won, setWon] = useState()
     const [selected, setSelected] = useState(state);
     const priceRef = useRef();
     const descriptionRef = useRef();
+
+    const getWon = () => {
+        const eth = Number(priceRef.current.value || '')
+        console.log(eth)
+        const wonPrice = Math.floor(eth*exchangeRate)
+        setWon(wonPrice)
+    }
 
     const onPublic = () => {
         setSelected("public")
@@ -116,7 +124,8 @@ const ProfileAssetModal = ({asset, isOpen, close, pinata, setFlag, contract}) =>
                             selected === "public" &&
                             <div>
                                 <span>가격</span>
-                                <input type="text" ref = {priceRef} defaultValue={price}/>
+                                <input type="text" ref = {priceRef} defaultValue={price} onChange={getWon}/>
+                                <span> (Approx. {won} 원)</span>
                             </div>
                         }
                     </li>

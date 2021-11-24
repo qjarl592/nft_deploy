@@ -1,8 +1,8 @@
 /** @jsx jsx */
 import { css, jsx } from '@emotion/react'
-import React, { createContext, useEffect, useState} from "react";
+import React, { useEffect, useState} from "react";
 import ERC_721 from "./contracts/ERC721.json";
-import {HashRouter as Router, Route, Switch} from "react-router-dom";
+import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
 import Market from './components/Market';
 import Layout from './components/Layout';
 import Profile from './components/Profile';
@@ -15,25 +15,6 @@ const app=css`
   height: 100vh;
 `
 
-export const WebDispatch = createContext({});
-
-const reducer = (state, action) =>{
-    switch (action.type) {
-        case 'setMethod':
-            return{
-                ...state,
-                methods: action.methods
-            };
-        case 'setAccount':
-            return {
-                ...state,
-                accounts: action.accounts
-            }
-        default:
-            return state;
-    }
-}
-
 const pinataSDK = require('@pinata/sdk');
 const pinataObj = pinataSDK(process.env.REACT_APP_PINATA_API_KEY, process.env.REACT_APP_PINATA_SECRET_KEY);
 
@@ -41,10 +22,21 @@ const App = () => {
     const [account, setAccount] = useRecoilState(accountState);
     const [ERC721Contract, setERC721Contract] = useState();
     const [pinata, setPinata] = useState(pinataObj)
+    const [exchangeRate, setExchangeRate] = useState()
 
     useEffect(()=>{
         connectWeb3();
+        getRate()
     },[])
+
+    const getRate = async () => {
+		const response = await fetch('https://api.coingecko.com/api/v3/exchange_rates');
+		const result = await response.json(); 
+		const eth = Number(result.rates.eth.value)
+		const krw = Number(result.rates.krw.value)
+		const rate = krw/eth
+		setExchangeRate(rate)
+	}
 
     const connectWeb3 =async ()=>{
         try{
@@ -74,10 +66,10 @@ const App = () => {
                 <Switch>
                         <Layout>
                             <Route exact path="/" render ={
-                                props =>  <Market {...props} contract={ERC721Contract} pinata={pinata}  />}>
+                                props =>  <Market {...props} exchangeRate={exchangeRate} contract={ERC721Contract} pinata={pinata}  />}>
                             </Route>
                             <Route exact path="/profile" render={
-                                props => <Profile {...props} contract={ERC721Contract} pinata={pinata}/>} />
+                                props => <Profile {...props} exchangeRate={exchangeRate} contract={ERC721Contract} pinata={pinata}/>} />
                             <Route exact path='/wallet' render={
                                 props => <Wallet {...props} connectWeb3={connectWeb3}/>} />
                         </Layout>

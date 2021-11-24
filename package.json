@@ -7,6 +7,7 @@
     "@emotion/react": "^11.4.1",
     "@pinata/sdk": "^1.1.23",
     "fs": "^0.0.1-security",
+    "ipfs-core": "^0.12.2",
     "ipfs-http-client": "^51.0.1",
     "react": "16.11.0",
     "react-devtools": "^4.16.0",

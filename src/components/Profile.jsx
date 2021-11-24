@@ -10,13 +10,13 @@ import Asset from "./Asset";
 
 const profile= css`
 	position: absolute;
-	padding-top: 1em;
+	margin-top: 1em;
 	left: 50%;
 	transform: translate(-50%);
-	width: 90%;
+	width: 95%;
 	height: 100%;
 	background-color: white;
-	box-shadow: 6px 0px 6px 2px rgba(217, 217, 217, 1);
+	box-shadow: 0px 0px 6px 6px rgba(217, 217, 217, 1);
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: left;
@@ -50,7 +50,7 @@ const nftContainer = css`
 		color: gray;
 	}
 `
-const Profile = ({contract, pinata}) => {
+const Profile = ({contract, pinata, exchangeRate}) => {
 	const [myAssets, setMyAssets]=useState({});
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [flag, setFlag] = useState(false);
@@ -59,7 +59,7 @@ const Profile = ({contract, pinata}) => {
 
 	const fetchPinned = async () => {
 		const filter = {
-			status: 'unpinned',
+			status: 'pinned',
 			metadata: {
 				keyvalues: {
 					account: {
@@ -70,6 +70,7 @@ const Profile = ({contract, pinata}) => {
 			}
 		}
 		const tokens = await pinata.pinList(filter);
+		console.log(tokens)
 		setMyAssets(tokens.rows)
 	}
 
@@ -102,7 +103,7 @@ const Profile = ({contract, pinata}) => {
 			</button>
 			<CreateNftForm isModalOpen={isModalOpen} closeModal={closeModal} setFlag={setFlag} contract={contract} pinata={pinata}/>
 			{Object.keys(myAssets).map(key => (
-				<Asset key={key} asset={myAssets[key]} contract={contract} pinata={pinata} setFlag={setFlag}/>
+				<Asset key={key} asset={myAssets[key]} contract={contract} pinata={pinata} setFlag={setFlag} exchangeRate={exchangeRate}/>
 			))};
 		</div>
 	)

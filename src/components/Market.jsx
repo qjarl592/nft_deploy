@@ -10,10 +10,10 @@ const market= css`
 	margin-top: 1em;
 	left: 50%;
 	transform: translate(-50%);
-	width: 90%;
+	width: 95%;
 	height: 100%;
 	background-color: white;
-	box-shadow: 6px 0px 6px 2px rgba(217, 217, 217, 1);
+	box-shadow: 0px 0px 6px 6px rgba(217, 217, 217, 1);
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: left;
@@ -32,23 +32,11 @@ const filter={
 	}
 }
 
-const Market = ({contract,pinata}) => {
+const Market = ({contract,pinata,exchangeRate}) => {
 	const [keyword, setKeyword] = useRecoilState(keywordState) //검색 키워드
 	const [assets, setAssets] = useState({}); //마켓에서 보여지는 토큰들
-	const [exchangeRate, setExchangeRate] = useState();
-
-	const getRate = async () => {
-		const response = await fetch('https://api.coingecko.com/api/v3/exchange_rates');
-		const result = await response.json(); 
-		const eth = Number(result.rates.eth.value)
-		const krw = Number(result.rates.krw.value)
-		const rate = krw/eth
-		console.log(rate)
-		setExchangeRate(rate)
-	}
 
 	useEffect(() => {
-		getRate()
 		filter.metadata.name=keyword;
 		async function fetchPinned() {
 			const tokens = await pinata.pinList(filter);
@@ -67,4 +55,3 @@ const Market = ({contract,pinata}) => {
 };
 
 export default Market;
-

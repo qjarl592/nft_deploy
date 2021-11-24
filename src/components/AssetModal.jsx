@@ -20,13 +20,18 @@ const customStyles = {
 	},
 };
 
+const modalContent = css`
+	list-style: none;
+`
 const purchaseButton = css`
 	background-color: ${Colors.purple_key};
 	width: 50vh;
 	height: 4vh;
 `
 
-const AssetModal = ({asset, contract, pinata, isOpen, close }) => {
+const AssetModal = ({asset, contract, pinata, isOpen, close, exchangeRate}) => {
+	const {name} = asset.metadata
+	const { author, description, price} = asset.metadata.keyvalues;
 	const [account, setAccount] = useRecoilState(accountState);
 
 	const buyToken = async () => {
@@ -53,12 +58,28 @@ const AssetModal = ({asset, contract, pinata, isOpen, close }) => {
 			onRequestClose={close}
 			contentLabel="Example Modal"
 		>
-			<h1>세부정보</h1>
-			<h2>제목 : {asset.metadata.name}</h2>
-			<h2>아티스트 : {asset.metadata.keyvalues.author}</h2>
-			<h2>설명 : {asset.metadata.keyvalues.description}</h2>
-			<h2>가격 : {asset.metadata.keyvalues.price} ETH</h2>
-			<input css={purchaseButton} type="button" id="buy" value="구매하기" onClick={buyToken}/>
+				<ul css={modalContent}>
+					<li>
+						<span>세부정보</span>
+					</li>
+					<li><span>제목: </span>
+						<span>{name}</span>
+					</li>
+					<li>
+						<span>아티스트: </span>
+						<span>{author}</span>
+					</li>
+					<li>
+						<span>설명: </span>
+						<span>{description}</span>
+					</li>
+					<li>
+						<span>가격: </span>
+						<span>{price}</span>
+						<span> (Approx. {Math.round(price*exchangeRate)} 원)</span>
+					</li>
+				</ul>
+				<input css={purchaseButton} type="button" id="buy" value="구매하기" onClick={buyToken}/>
 		</Modal>
 	)
 }
