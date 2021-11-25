@@ -16,8 +16,7 @@ const getWeb3 = () =>
         }
         else {
             const provider = new Web3.providers.HttpProvider(
-                //"http://127.0.0.1:8545"
-	   "https://ropsten.infura.io/v3/e2559d731c1948ccb2f9df34ac13b9d9"
+	            "https://ropsten.infura.io/v3/e2559d731c1948ccb2f9df34ac13b9d9"
             );
             resolve(new Web3(provider));
         }
