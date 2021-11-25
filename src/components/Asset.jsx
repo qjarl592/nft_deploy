@@ -35,7 +35,7 @@ const assetStyle = css`
 	width: 260px;
 	height: 390px;
 	padding: 1.3em;
-	margin-left: 3em;
+	margin-left: 2em;
 	margin-top: 2em;
 	margin-bottom: 1.5em;
 	border-radius: 1em;
