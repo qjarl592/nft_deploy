@@ -56,7 +56,7 @@ const nftContainer = css`
 	box-shadow: 0px 0px 6px 6px rgba(217, 217, 217, 1);
 `
 
-const Profile = ({contract, pinata, exchangeRate}) => {
+const Profile = ({contract, pinata, exchangeRate,baseURL}) => {
 	const [myAssets, setMyAssets]=useState({});
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [flag, setFlag] = useState(false);
@@ -106,7 +106,7 @@ const Profile = ({contract, pinata, exchangeRate}) => {
 			</div>
 			<CreateNftForm isModalOpen={isModalOpen} closeModal={closeModal} setFlag={setFlag} contract={contract} pinata={pinata}/>
 			{Object.keys(myAssets).map(key => (
-				<Asset key={key} asset={myAssets[key]} contract={contract} pinata={pinata} setFlag={setFlag} exchangeRate={exchangeRate}/>
+				<Asset key={key} asset={myAssets[key]} baseURL={baseURL} contract={contract} pinata={pinata} setFlag={setFlag} exchangeRate={exchangeRate}/>
 			))};
 		</div>
 	)
