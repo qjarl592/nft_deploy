@@ -2,7 +2,7 @@
 import { css, jsx } from '@emotion/react'
 import React, { useEffect, useState} from "react";
 import ERC_721 from "./contracts/ERC721.json";
-import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
+import {HashRouter as Router, Route, Switch} from "react-router-dom";
 import Market from './components/Market';
 import Layout from './components/Layout';
 import Profile from './components/Profile';
