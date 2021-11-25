@@ -50,8 +50,8 @@ const nftContainer = css`
 	border: 3px dashed gray;
 	border-radius: 1em;
 	padding: 1.1em;
-	margin-left: 1em;
-	margin-top: 0.5em;
+	margin-left: 2em;
+	margin-top: 2em;
 	margin-bottom: 1.5em;
 	box-shadow: 0px 0px 6px 6px rgba(217, 217, 217, 1);
 `
