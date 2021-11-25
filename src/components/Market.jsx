@@ -11,7 +11,6 @@ const market= css`
 	left: 50%;
 	transform: translate(-50%);
 	width: 95%;
-	height: 100%;
 	background-color: white;
 	box-shadow: 0px 0px 6px 6px rgba(217, 217, 217, 1);
 	display: flex;
@@ -20,7 +19,7 @@ const market= css`
 	align-content: stretch;
 `
 const filter={
-	status: 'unpinned',
+	status: 'pinned',
 	metadata:{
 		name: '',
 		keyvalues: {
@@ -32,10 +31,14 @@ const filter={
 	}
 }
 
-const Market = ({contract,pinata,exchangeRate}) => {
+const Market = ({contract,pinata, exchangeRate, baseURL}) => {
 	const [keyword, setKeyword] = useRecoilState(keywordState) //검색 키워드
 	const [assets, setAssets] = useState({}); //마켓에서 보여지는 토큰들
+	const [mkFlag, setMkFlag] = useState(false);
 
+	useEffect(() => {
+		setMkFlag(true)
+	},[])
 	useEffect(() => {
 		filter.metadata.name=keyword;
 		async function fetchPinned() {
@@ -43,15 +46,17 @@ const Market = ({contract,pinata,exchangeRate}) => {
 			setAssets(tokens.rows);
 		}
 		fetchPinned();
-	},[keyword]);
+		setMkFlag(false)
+	},[keyword, mkFlag]);
 
 	return (
 		<div css={market}>
 			{Object.keys(assets).map(key => (
-				<Asset key={key} asset={assets[key]} contract={contract} pinata={pinata} exchangeRate={exchangeRate}/>
+				<Asset key={key} asset={assets[key]} contract={contract} pinata={pinata} exchangeRate={exchangeRate} setMkFlag={setMkFlag} baseURL={baseURL}/>
 			))}
 		</div>
 	)
 };
 
 export default Market;
+

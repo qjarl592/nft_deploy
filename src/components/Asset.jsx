@@ -8,22 +8,24 @@ import ProfileAssetModal from "./ProfileAssetModal";
 const info = css`
 	padding: 0.5em;
 	.price{
-		font-size: 0.6rem;
+		font-size: 1rem;
 		color: gray;
+		margin-left:0.5em
 	}
 `
 const nameAudio = css`
-	display: flex;
 	align-items: center;
-	.name {
-		flex: 2;
-		margin-right: 5px;
-	}
 	.audio {
-		flex: 8;
+		width: 100%;
 		height: 2em;
 	}
+	.name {
+		margin-left: 0.5em;
+		font-size: 17px;
+		font-weight: bold;
+	}
 `
+
 const assetStyle = css`
 	&:hover {
 		opacity: 0.8;
@@ -31,16 +33,18 @@ const assetStyle = css`
 	}
 	list-style: none;
 	width: 260px;
-	height: 350px;
+	height: 390px;
 	padding: 1.3em;
-	margin: 0.5em;
-	margin-top: 2em;
+	margin-left: 1em;
+	margin-top: 0.5em;
+	margin-bottom: 1.5em;
 	border-radius: 1em;
-	box-shadow: 4px 2px 4px 2px rgba(217, 217, 217, 217);
+	box-shadow: 0px 0px 6px 6px rgba(217, 217, 217, 1);
 	img{
 		border-radius: 0.5em;
 		object-fit: contain;
-		width: 100%;
+		width: 250px;
+		height: 260px;
 		padding: 0.5em;
 	}
 	.info{
@@ -53,10 +57,9 @@ const assetStyle = css`
 	}
 `
 
-const Asset = ({asset, contract, pinata, setFlag, exchangeRate}) => {
-	const baseURL = 'https://gateway.pinata.cloud/ipfs/';
+const Asset = ({asset, contract, pinata, setFlag, exchangeRate, setMkFlag, baseURL}) => {
 	const {name} = asset.metadata
-	const {price} = asset.metadata.keyvalues;
+	const { price, image } = asset.metadata.keyvalues;
 	const [isModalOpen, setIsModalOpen] = useState(false); //모달창이 열렸는가?
 	let history = useHistory();
 	const {pathname} = history.location;
@@ -70,18 +73,18 @@ const Asset = ({asset, contract, pinata, setFlag, exchangeRate}) => {
 
 	return (
 		<li css={assetStyle} className="asset">
-			<img src={asset.metadata.keyvalues.image} alt="asset" onClick={openModal}/>
+			<img src={image} alt="asset" onClick={openModal}/>
 			{
 				pathname === "/profile"
-					? <ProfileAssetModal asset={asset} contract={contract} isOpen={isModalOpen} close={closeModal} pinata={pinata} setFlag={setFlag} exchangeRate={exchangeRate}/>
-					: <AssetModal asset={asset} contract={contract} isOpen={isModalOpen} close={closeModal} pinata={pinata} exchangeRate={exchangeRate}/>
+					? <ProfileAssetModal asset={asset} contract={contract} isOpen={isModalOpen} close={closeModal} pinata={pinata} setFlag={setFlag} exchangeRate={exchangeRate} baseURL={baseURL}/>
+					: <AssetModal asset={asset} contract={contract} isOpen={isModalOpen} close={closeModal} pinata={pinata} exchangeRate={exchangeRate} setMkFlag={setMkFlag} baseURL={baseURL}/>
 			}
 			<div css={info}>
 				<div css={nameAudio}>
-					<span className="name">{name}</span>
 					<audio controls className="audio">
 						<source src={baseURL + asset.ipfs_pin_hash}/>
 					</audio>
+					<span className="name">{name}</span>
 				</div>
 				{
 					price && <span className="price">{price} ETH (Approx. {Math.floor(Number(price)*exchangeRate)} 원)</span>

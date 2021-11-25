@@ -18,9 +18,7 @@
     bottom: auto;
     width: 80vh;
     height: 600px;
-    marginRight: -50%;
     overflow: scroll;
     border-radius: 1rem;
-
     transform: translate(-50%, -50%);
 }

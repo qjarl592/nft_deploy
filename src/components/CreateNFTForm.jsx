@@ -1,9 +1,9 @@
 /** @jsx jsx */
 import Modal from 'react-modal';
-import React, {useEffect, useRef, useState} from 'react';
-import {css, jsx} from "@emotion/react";
+import React, {useRef, useState} from 'react';
+import {css, jsx, keyframes} from "@emotion/react";
 import './Modal.css';
-import {create} from "ipfs-http-client";
+import './Loader.css';
 import {accountState} from "../state/state";
 import {useRecoilState} from "recoil";
 import {Colors} from "../colors/Colors";
@@ -91,7 +91,7 @@ const uploadButton = css`
   margin: auto;
   margin-top: 20px;
   height: 40px;
-  width: 80%;
+  width: 100%;
   padding: 0 2em;
   cursor: pointer;
   transition: 800ms ease all;
@@ -118,13 +118,28 @@ const uploadButton = css`
       width: 100%;
       transition: 800ms ease all;
 `;
-
-//const ipfs = create({ host: 'ipfs.infura.io', port: '5001', protocol: 'https' });
-
+const floating = keyframes`
+	0% { transform: rotate(0deg); }
+	100% { transform: rotate(360deg); }
+`
+const loader = css`
+  z-index: 100;
+  position: absolute;
+  display: inline-block;
+  top: 45%;
+  left: 45%;
+  border: 6px solid #f3f3f3; /* Light grey */
+  border-top: 6px solid ${Colors.purple_key}; /* Blue */
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: ${floating} 2s ease infinite;
+`;
 const CreateNftForm = ({isModalOpen, closeModal, setFlag, contract, pinata}) => {
     const [account, setAccount] = useRecoilState(accountState);
     const [audioBuffer, setAudioBuffer] = useState();
     const [imageBuffer, setImageBuffer] = useState();
+    const [loaderStyle, setLoaderStyle] = useState(false)
 
     const audioCapture = (event) => {
         event.preventDefault();
@@ -154,38 +169,45 @@ const CreateNftForm = ({isModalOpen, closeModal, setFlag, contract, pinata}) => 
     const descriptionRef= useRef();
 
     const createToken = async () => {
-        //import * as IPFS from 'ipfs-core'
-        const ipfs = await IPFS.create()
-        const myImageResult = await ipfs.add(imageBuffer)
-        const imgName = (titleRef.current.value || '') + "_image"
-        await pinata.pinByHash(myImageResult.path, {
-            pinataMetadata: {
-                name: imgName,
-            },
-        });
-        const tokenID = await contract.methods.curId().call()
-        const options={
-            pinataMetadata: {
-                name: titleRef.current.value || '',
-                keyvalues: {
-                    author: authorRef.current.value || '',
-                    description : descriptionRef.current.value || '',
-                    image : 'https://gateway.pinata.cloud/ipfs/'+myImageResult.path,
-                    state : 'private',
-                    account: account,
-                    tokenID: tokenID,
-                },
-            },
+        setLoaderStyle(true)
+        try{
+          const ipfs = await IPFS.create({repo: 'ok' + Math.random()})
+          const myImageResult = await ipfs.add(imageBuffer)
+          const imgName = (titleRef.current.value || '') + "_image"
+          await pinata.pinByHash(myImageResult.path, {
+              pinataMetadata: {
+                  name: imgName,
+              },
+          });
+          const tokenID = await contract.methods.curId().call()
+          const options={
+              pinataMetadata: {
+                  name: titleRef.current.value || '',
+                  keyvalues: {
+                      author: authorRef.current.value || '',
+                      description : descriptionRef.current.value || '',
+                      image : 'https://gateway.pinata.cloud/ipfs/'+myImageResult.path,
+                      state : 'private',
+                      account: account,
+                      tokenID: tokenID,
+                  },
+              },
+          }
+          //pinning
+          const myAssetResult = await ipfs.add(audioBuffer);
+          const pinataResult = await pinata.pinByHash(myAssetResult.path, options);
+      
+          await contract.methods.mint(account, pinataResult.ipfsHash).send({ from: account });
+          setFlag(true)
         }
-        //pinning
-        const myAssetResult = await ipfs.add(audioBuffer);
-        const pinataResult = await pinata.pinByHash(myAssetResult.path, options);
-    
-        await contract.methods.mint(account, pinataResult.ipfsHash).send({ from: account });
-        setFlag(true)
+        catch(error) {
+          console.log(error)
+        }
+        setLoaderStyle(false)
         closeModal()
     };
 
+    const displayClass = loaderStyle? "inline" : "hidden"
     return(
         <div>
             <Modal
@@ -194,12 +216,13 @@ const CreateNftForm = ({isModalOpen, closeModal, setFlag, contract, pinata}) => 
                 isOpen={isModalOpen}
                 onRequestClose={closeModal}
             >
+                <div css={loader} id={displayClass}/>
                 <ul css={modalContainer}>
                     <li>NFT 생성하기</li>
                     <li css={audioFile}>
                         <input ref={audioRef} className="upload-name" placeholder="음악 파일" readOnly/>
                         <label htmlFor="audio-file">파일찾기</label>
-                        <input type="file" id="audio-file"style={{display:"none"}} onChange={audioCapture}/>
+                        <input type="file" id="audio-file" style={{display:"none"}} onChange={audioCapture}/>
                     </li>
                     <li css={imageFile}>
                         <input ref={imageRef} className="upload-name" placeholder="이미지 파일" onChange={imageCapture} readOnly/>

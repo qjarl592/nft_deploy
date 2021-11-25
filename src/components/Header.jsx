@@ -58,6 +58,7 @@ const searchWindow =css`
 	border-radius: 24px;
 	border: 1px black solid;
 	align-items: center;
+
 	input {
 		border: none;
 		width: 100%;
@@ -79,8 +80,11 @@ const Header = () => {
 	const keywordRef = useRef()
 
 	let history= useHistory();
-	const goProfile=()=>{
-		if(account){
+	const goProfile=async()=>{
+		const web3 = await getWeb3()
+		const curAccounts = await web3.eth.getAccounts();
+		const curAccount = curAccounts[0]
+		if(account===curAccount){
 			history.push("/profile")
 		}else{
 			history.push("/wallet");
@@ -105,12 +109,9 @@ const Header = () => {
 		history.push("/")
 	};
 
-	const getAccounts = async () => {
-        const web = await getWeb3();
-        const accounts = await web.eth.getAccounts();
-        setAccount(accounts[0]);
-		console.log(account)
-    }
+	const goWallet=()=>{
+		history.push("/Wallet")
+	}
 
 	return(
 		<div css={header} className="app-header">
@@ -121,7 +122,7 @@ const Header = () => {
 			</div>
 			<ul css={buttons}>
 				<li className="profile"><button onClick={goProfile}><img src="images/SVG/Profile.svg" alt="" /></button></li>
-				<li className="wallet"><button onClick={getAccounts}><img src="images/SVG/Wallet.svg" alt="" /></button></li>
+				<li className="wallet"><button onClick={goWallet}><img src="images/SVG/Wallet.svg" alt="" /></button></li>
 			</ul>
 		</div>
 	)
