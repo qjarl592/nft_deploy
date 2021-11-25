@@ -92,6 +92,7 @@ const uploadButton = css`
   margin-top: 20px;
   height: 40px;
   width: 100%;
+  border-radius: 1em;
   padding: 0 2em;
   cursor: pointer;
   transition: 800ms ease all;
